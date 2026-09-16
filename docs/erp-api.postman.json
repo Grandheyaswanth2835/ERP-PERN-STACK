@@ -1,0 +1,263 @@
+{
+  "info": {
+    "name": "Mini ERP - Industrial Products",
+    "description": "Workflow: Customer Enquiry → Quotation → Sales Order → Inventory Reservation → Dispatch. All endpoints except /auth/login require Authorization: Bearer <token>.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"username\": \"admin\", \"password\": \"admin123\" }"
+            }
+          }
+        },
+        {
+          "name": "Login (Sales User)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"username\": \"sales1\", \"password\": \"sales123\" }"
+            }
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/auth/me", "host": ["{{baseUrl}}"], "path": ["api", "auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/customers", "host": ["{{baseUrl}}"], "path": ["api", "customers"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"company_name\": \"ABC Engineering Pvt. Ltd.\", \"contact_person\": \"Vikram Mehta\", \"mobile\": \"9876543210\", \"email\": \"vikram@abceng.com\", \"city\": \"Mumbai\" }"
+            }
+          }
+        },
+        {
+          "name": "List Customers",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/customers", "host": ["{{baseUrl}}"], "path": ["api", "customers"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products & Inventory",
+      "item": [
+        {
+          "name": "List Products",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/products", "host": ["{{baseUrl}}"], "path": ["api", "products"] }
+          }
+        },
+        {
+          "name": "Inventory (physical/reserved/available)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/products/inventory/all", "host": ["{{baseUrl}}"], "path": ["api", "products", "inventory", "all"] }
+          }
+        },
+        {
+          "name": "Update Inventory (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/products/inventory/1", "host": ["{{baseUrl}}"], "path": ["api", "products", "inventory", "1"] },
+            "body": { "mode": "raw", "raw": "{ \"physical_quantity\": 500 }" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Enquiries",
+      "item": [
+        {
+          "name": "Create Enquiry (multi-product)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/enquiries", "host": ["{{baseUrl}}"], "path": ["api", "enquiries"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"customer_id\": 1, \"required_date\": \"2026-12-20\", \"notes\": \"Urgent\", \"items\": [ { \"product_id\": 1, \"quantity\": 100 }, { \"product_id\": 2, \"quantity\": 40 }, { \"product_id\": 3, \"quantity\": 200 } ] }"
+            }
+          }
+        },
+        {
+          "name": "List Enquiries",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/enquiries", "host": ["{{baseUrl}}"], "path": ["api", "enquiries"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Quotations",
+      "item": [
+        {
+          "name": "Create Quotation (backend computes total)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/quotations", "host": ["{{baseUrl}}"], "path": ["api", "quotations"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"enquiry_id\": 1, \"valid_until\": \"2026-11-30\", \"status\": \"DRAFT\", \"items\": [ { \"product_id\": 1, \"quantity\": 100, \"unit_price\": 350, \"discount_percent\": 5, \"gst_percent\": 18 } ] }"
+            }
+          }
+        },
+        {
+          "name": "List Quotations",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/quotations", "host": ["{{baseUrl}}"], "path": ["api", "quotations"] }
+          }
+        },
+        {
+          "name": "Mark SENT",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/quotations/1/status", "host": ["{{baseUrl}}"], "path": ["api", "quotations", "1", "status"] },
+            "body": { "mode": "raw", "raw": "{ \"status\": \"SENT\" }" }
+          }
+        },
+        {
+          "name": "Accept Quotation",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/quotations/1/status", "host": ["{{baseUrl}}"], "path": ["api", "quotations", "1", "status"] },
+            "body": { "mode": "raw", "raw": "{ \"status\": \"ACCEPTED\" }" }
+          }
+        },
+        {
+          "name": "Reject Quotation",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/quotations/1/status", "host": ["{{baseUrl}}"], "path": ["api", "quotations", "1", "status"] },
+            "body": { "mode": "raw", "raw": "{ \"status\": \"REJECTED\" }" }
+          }
+        },
+        {
+          "name": "Convert to Sales Order",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/quotations/1/convert", "host": ["{{baseUrl}}"], "path": ["api", "quotations", "1", "convert"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sales Orders",
+      "item": [
+        {
+          "name": "List Sales Orders",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/sales-orders", "host": ["{{baseUrl}}"], "path": ["api", "sales-orders"] }
+          }
+        },
+        {
+          "name": "Confirm & Reserve (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/sales-orders/1/confirm", "host": ["{{baseUrl}}"], "path": ["api", "sales-orders", "1", "confirm"] }
+          }
+        },
+        {
+          "name": "Cancel Order & Release Stock (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/sales-orders/1/cancel", "host": ["{{baseUrl}}"], "path": ["api", "sales-orders", "1", "cancel"] }
+          }
+        },
+        {
+          "name": "Dispatch (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/sales-orders/1/dispatch", "host": ["{{baseUrl}}"], "path": ["api", "sales-orders", "1", "dispatch"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"vehicle_number\": \"KA 01 AB 1234\", \"driver_name\": \"Ramesh Kumar\" }"
+            }
+          }
+        },
+        {
+          "name": "List Dispatches",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/api/sales-orders/dispatches/list", "host": ["{{baseUrl}}"], "path": ["api", "sales-orders", "dispatches", "list"] }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000" },
+    { "key": "token", "value": "" }
+  ]
+}
