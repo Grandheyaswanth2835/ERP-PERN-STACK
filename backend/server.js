@@ -15,6 +15,25 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.get('/api', (req, res) => {
+  res.json({
+    name: 'Mini ERP API',
+    version: '1.0.0',
+    base: '/api',
+    endpoints: [
+      'POST /api/auth/login',
+      'GET /api/auth/me',
+      'POST|GET /api/customers',
+      'POST|GET /api/enquiries',
+      'POST|GET /api/quotations',
+      'GET /api/products',
+      'GET /api/products/inventory/all',
+      'GET /api/sales-orders',
+      'GET /api/health',
+    ],
+  });
+});
+
 app.get('/api/health', (req, res) => res.json({ status: 'ok', service: 'ERP API', time: new Date().toISOString() }));
 
 app.use('/api/auth', authRoutes);
