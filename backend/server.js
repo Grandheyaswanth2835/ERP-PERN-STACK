@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 
@@ -25,6 +26,24 @@ app.use('/api/sales-orders', salesOrderRoutes);
 
 app.use('/api', (req, res) => {
   res.status(404).json({ error: 'Route not found.' });
+});
+
+const distDir = path.join(__dirname, '..', 'frontend', 'dist');
+app.use(
+  express.static(distDir, {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('index.html')) {
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      } else {
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      }
+    },
+  })
+);
+app.get('*', (req, res) => {
+  res.sendFile(path.join(distDir, 'index.html'), {
+    headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' },
+  });
 });
 
 app.use((err, req, res, next) => {

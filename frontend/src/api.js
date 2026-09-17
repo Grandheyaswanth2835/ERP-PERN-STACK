@@ -13,8 +13,15 @@ export function clearToken() {
 }
 
 export function getUser() {
-  const raw = localStorage.getItem('erp_user');
-  return raw ? JSON.parse(raw) : null;
+  try {
+    const raw = localStorage.getItem('erp_user');
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed && parsed.username ? parsed : null;
+  } catch (_) {
+    localStorage.removeItem('erp_user');
+    return null;
+  }
 }
 
 export function setUser(user) {

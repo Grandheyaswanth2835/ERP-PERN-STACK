@@ -1,0 +1,13 @@
+{
+  "name": "erp-pern-stack",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mini ERP (PERN) - Express API + React SPA on a single Railway service",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "start": "node backend/server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
